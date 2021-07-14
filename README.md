@@ -1,6 +1,9 @@
 # AngularThreejsBootstrap
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.4.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.4 and is designed to be a basic template for ThreeJS and allow for loading custom shaders (.glsl, .vs, .fs)
+
+
+
 
 ## Development server
 
