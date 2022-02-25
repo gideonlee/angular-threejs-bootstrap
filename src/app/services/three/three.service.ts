@@ -1,5 +1,6 @@
 import { Injectable, NgZone, ElementRef } from '@angular/core';
 import * as THREE from 'three';
+import * as dat from 'dat.gui';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import fragmentShader from '../../../assets/fragment-shader.glsl';
 import vertexShader from '../../../assets/vertex-shader.glsl';
@@ -13,35 +14,24 @@ export class ThreeService {
   private renderer?: any;
   private cameraControls: any;
   private frameId: number | null = null;
+  private time: number = 0; 
+
+  private material: THREE.ShaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      time: { value: 0 },
+    },
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+  })
+
+  private settings: any;
+  private gui: any;
 
   constructor(private ngZone: NgZone) { }
 
   // Components will call createScene to pass the canvas and begin the scene.
   public createScene(canvas?: ElementRef<HTMLCanvasElement>) {
     this.init(canvas?.nativeElement);
-  }
-
-  // Instantiates canvas.
-  private init(canvas?: HTMLCanvasElement) {
-    // Instantiate Scene
-    this.scene = new THREE.Scene();
-
-    // Instantiate Stable camera and position
-    this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 3000 );
-    this.camera.position.z = 1000;
-
-    // Instantiate renderer using provided canvas, set size to window.
-    this.renderer = new THREE.WebGLRenderer({ 
-      antialias: true,
-      canvas: canvas, 
-    });
-    this.renderer.setSize(window.innerWidth, window.innerHeight-20);
-
-    // Set Orbit Camera Controls and disable movement.
-    this.cameraControls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.cameraControls.enabled = false;
-
-    this.sampleMesh();
   }
 
   // Components will call the animate function to perform renders.
@@ -61,6 +51,32 @@ export class ThreeService {
         this.resize();
       })
     })
+  }
+
+  // Instantiates canvas.
+  private init(canvas?: HTMLCanvasElement) {
+    // Instantiate Scene
+    this.scene = new THREE.Scene();
+
+    // Instantiate Stable camera and position
+    this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 3000 );
+    this.camera.position.z = 1;
+
+    // Instantiate renderer using provided canvas, set size to window.
+    this.renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      canvas: canvas, 
+    });
+    this.renderer.setSize(window.innerWidth, window.innerHeight-20);
+
+    // Set Orbit Camera Controls and disable movement.
+    this.cameraControls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.cameraControls.enabled = false;
+
+    // Testing Control
+    this.settingsControl();
+
+    this.sampleMesh();
   }
 
   // Render Loop
@@ -92,5 +108,17 @@ export class ThreeService {
     );
 
     this.scene.add(greenSphere);
+  }
+
+  // Testing Environment Control
+  public settingsControl() {
+    this.settings = {
+      scale: 1,
+      progress: 1,
+    };
+
+    this.gui = new dat.GUI();
+    this.gui.add(this.settings, "scale", -5, 5, 0.01);
+    this.gui.add(this.settings, "progress", 0, 1, 0.01);
   }
 }
