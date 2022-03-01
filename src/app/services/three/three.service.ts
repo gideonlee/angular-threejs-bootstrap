@@ -99,7 +99,7 @@ export class ThreeService {
   // Sphere with custom GLSL shaders.
   public sampleMesh() {
     let greenSphere = new THREE.Mesh(
-      new THREE.SphereGeometry(50, 32, 32), 
+      new THREE.SphereGeometry(0.1, 32, 32), 
       new THREE.ShaderMaterial({
         uniforms: {},
         vertexShader: vertexShader.toString(),
